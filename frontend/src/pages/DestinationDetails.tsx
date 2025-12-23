@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import { getDestinationById } from "../api/destination.api";
 import { DestinationGuide } from "../types/destination";
 import { addFavorite } from "../api/favorite.api";
 import { getReviews, addReview } from "../api/review.api";
 import { Review } from "../types/review";
+import { getOrCreateConversation } from "../api/chat.api";
 
 const DestinationDetails = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [data, setData] = useState<DestinationGuide | null>(null);
     const [loading, setLoading] = useState(true);
     const [favoriteLoading, setFavoriteLoading] = useState(false);
@@ -51,6 +53,21 @@ const DestinationDetails = () => {
             alert("Already added or failed");
         } finally {
             setFavoriteLoading(false);
+        }
+    };
+
+    const handleChatWithReviewer = async (reviewer: any) => {
+        try {
+            const res = await getOrCreateConversation(reviewer._id);
+            navigate("/chat", {
+                state: {
+                    conversationId: res.data.conversationId,
+                    selectedUser: reviewer,
+                },
+            });
+        } catch (error) {
+            console.error("Error creating conversation:", error);
+            alert("Could not start chat. Please make sure you are logged in.");
         }
     };
 
@@ -275,6 +292,24 @@ const DestinationDetails = () => {
                                                     {renderStars(review.rating)}
                                                 </div>
                                             </div>
+                                            <button
+                                                onClick={() => handleChatWithReviewer(review.user)}
+                                                className="text-gray-500 hover:text-gray-800"
+                                            >
+                                                <svg
+                                                    className="w-6 h-6"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                                    />
+                                                </svg>
+                                            </button>
                                         </div>
                                         <p className="text-gray-700 leading-relaxed ml-13">
                                             {review.comment}

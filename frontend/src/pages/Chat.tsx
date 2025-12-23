@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import {
     getUsers,
@@ -9,12 +10,21 @@ import {
 import { ChatUser, ChatMessage } from "../types/chat";
 
 const Chat = () => {
+    const location = useLocation();
     const [users, setUsers] = useState<ChatUser[]>([]);
     const [search, setSearch] = useState("");
     const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
     const [conversationId, setConversationId] = useState<string | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [text, setText] = useState("");
+
+    // Handle initial state from navigation
+    useEffect(() => {
+        if (location.state?.selectedUser && location.state?.conversationId) {
+            setSelectedUser(location.state.selectedUser);
+            setConversationId(location.state.conversationId);
+        }
+    }, [location.state]);
 
     // Load users
     useEffect(() => {
