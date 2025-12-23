@@ -1,7 +1,8 @@
 import api from "./axios";
 
-export const searchDestinations = (query: string) => {
-    return api.get(`/destination-guides/search?query=${query}`);
+export const getDestinations = (query?: string) => {
+    const url = query ? `/destination-guides?query=${query}` : "/destination-guides";
+    return api.get(url);
 };
 
 export const getDestinationById = (id: string) => {

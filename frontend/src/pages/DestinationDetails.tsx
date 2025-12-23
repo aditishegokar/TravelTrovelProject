@@ -28,10 +28,7 @@ const DestinationDetails = () => {
     useEffect(() => {
         if (!id) return;
 
-        Promise.all([
-            getDestinationById(id),
-            loadReviews(),
-        ])
+        Promise.all([getDestinationById(id), loadReviews()])
             .then(([destRes]) => setData(destRes.data))
             .finally(() => setLoading(false));
     }, [id]);
@@ -40,6 +37,7 @@ const DestinationDetails = () => {
         if (!id || !comment.trim()) return;
         await addReview(id, rating, comment);
         setComment("");
+        setRating(5);
         loadReviews();
     };
 
@@ -56,11 +54,31 @@ const DestinationDetails = () => {
         }
     };
 
+    const renderStars = (count: number, interactive = false, onSelect?: (n: number) => void) => {
+        return (
+            <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                    <svg
+                        key={star}
+                        onClick={() => interactive && onSelect && onSelect(star)}
+                        className={`w-5 h-5 ${interactive ? "cursor-pointer hover:scale-110 transition-transform" : ""
+                            }`}
+                        fill={star <= count ? "#FCD34D" : "#E5E7EB"}
+                        viewBox="0 0 20 20"
+                    >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                ))}
+            </div>
+        );
+    };
+
     if (loading) {
         return (
             <Layout>
-                <div className="flex justify-center py-20 text-gray-500">
-                    Loading destination...
+                <div className="flex flex-col items-center justify-center py-32">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-900"></div>
+                    <p className="mt-4 text-gray-600">Loading destination...</p>
                 </div>
             </Layout>
         );
@@ -69,8 +87,21 @@ const DestinationDetails = () => {
     if (!data) {
         return (
             <Layout>
-                <div className="flex justify-center py-20 text-red-500">
-                    Destination not found
+                <div className="flex flex-col items-center justify-center py-32">
+                    <svg
+                        className="w-16 h-16 text-gray-300 mb-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+                    <p className="text-gray-600">Destination not found</p>
                 </div>
             </Layout>
         );
@@ -78,112 +109,181 @@ const DestinationDetails = () => {
 
     return (
         <Layout>
-            <div className="bg-gray-50 min-h-screen px-4 py-10">
-                <div className="max-w-4xl mx-auto space-y-10">
-
-                    {/* DESTINATION CARD */}
-                    <div className="bg-white rounded-lg shadow-md p-8">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                            <h1 className="text-3xl font-bold text-gray-800">
+            <div className="min-h-screen bg-white">
+                <div className="max-w-4xl mx-auto px-4 py-12">
+                    {/* HEADER */}
+                    <div className="mb-8">
+                        <div className="flex items-start justify-between gap-4 mb-4">
+                            <h1 className="text-4xl font-bold text-gray-900 leading-tight">
                                 {data.title}
                             </h1>
-
                             <button
                                 onClick={handleFavorite}
                                 disabled={favoriteLoading}
-                                className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+                                className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                             >
-                                {favoriteLoading ? "Adding..." : "Add to Favorites"}
+                                <svg
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                    />
+                                </svg>
+                                <span className="text-sm font-medium">
+                                    {favoriteLoading ? "Adding..." : "Save"}
+                                </span>
                             </button>
                         </div>
-
-                        <p className="text-gray-700 leading-relaxed mb-8">
+                        <p className="text-lg text-gray-600 leading-relaxed">
                             {data.description}
                         </p>
-
-                        {data.attractions?.length > 0 && (
-                            <>
-                                <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                                    Top Attractions
-                                </h2>
-                                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {data.attractions.map((a, i) => (
-                                        <li
-                                            key={i}
-                                            className="bg-gray-100 rounded-md px-4 py-2 text-gray-700"
-                                        >
-                                            {a}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </>
-                        )}
                     </div>
 
-                    {/* REVIEWS SECTION */}
-                    <div className="bg-white rounded-lg shadow-md p-8">
-                        <h2 className="text-2xl font-semibold mb-2">
-                            Reviews ({reviews.length})
-                        </h2>
-                        <p className="text-gray-600 mb-6">
-                            Average Rating: ⭐ {avgRating}
-                        </p>
-
-                        {/* ADD REVIEW */}
-                        <div className="bg-gray-100 rounded-md p-4 mb-8 space-y-3">
-                            <div className="flex gap-3">
-                                <select
-                                    value={rating}
-                                    onChange={(e) => setRating(Number(e.target.value))}
-                                    className="border rounded px-3 py-2"
-                                >
-                                    {[1, 2, 3, 4, 5].map((n) => (
-                                        <option key={n} value={n}>
-                                            {n} ⭐
-                                        </option>
-                                    ))}
-                                </select>
-
-                                <input
-                                    value={comment}
-                                    onChange={(e) => setComment(e.target.value)}
-                                    placeholder="Write your review..."
-                                    className="flex-1 border rounded px-4 py-2"
-                                />
+                    {/* ATTRACTIONS */}
+                    {data.attractions && data.attractions.length > 0 && (
+                        <div className="mb-12 pb-12 border-b border-gray-200">
+                            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+                                Top Attractions
+                            </h2>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                {data.attractions.map((attraction, i) => (
+                                    <div
+                                        key={i}
+                                        className="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+                                    >
+                                        <svg
+                                            className="w-5 h-5 text-gray-400 mt-0.5 shrink-0"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                            />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                        </svg>
+                                        <span className="text-gray-700">{attraction}</span>
+                                    </div>
+                                ))}
                             </div>
+                        </div>
+                    )}
 
-                            <button
-                                onClick={submitReview}
-                                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-                            >
-                                Submit Review
-                            </button>
+                    {/* REVIEWS SECTION */}
+                    <div>
+                        {/* Reviews Header */}
+                        <div className="mb-8">
+                            <h2 className="text-2xl font-semibold text-gray-900 mb-3">
+                                Reviews
+                            </h2>
+                            <div className="flex items-center gap-3">
+                                {renderStars(Math.round(avgRating))}
+                                <span className="text-lg font-medium text-gray-900">
+                                    {avgRating.toFixed(1)}
+                                </span>
+                                <span className="text-gray-500">·</span>
+                                <span className="text-gray-600">
+                                    {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* ADD REVIEW FORM */}
+                        <div className="mb-12 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                                Write a Review
+                            </h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Your Rating
+                                    </label>
+                                    {renderStars(rating, true, setRating)}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Your Review
+                                    </label>
+                                    <textarea
+                                        value={comment}
+                                        onChange={(e) => setComment(e.target.value)}
+                                        placeholder="Share your experience..."
+                                        rows={4}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent resize-none"
+                                    />
+                                </div>
+                                <button
+                                    onClick={submitReview}
+                                    disabled={!comment.trim()}
+                                    className="px-6 py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Submit Review
+                                </button>
+                            </div>
                         </div>
 
                         {/* REVIEWS LIST */}
-                        <div className="space-y-4">
-                            {reviews.length === 0 && (
-                                <p className="text-gray-500">
-                                    No reviews yet. Be the first to review!
-                                </p>
-                            )}
-
-                            {reviews.map((r) => (
-                                <div
-                                    key={r._id}
-                                    className="border rounded-md p-4"
-                                >
-                                    <p className="font-medium text-gray-800">
-                                        {r.user.email} · ⭐ {r.rating}
-                                    </p>
-                                    <p className="text-gray-700 mt-1">
-                                        {r.comment}
+                        <div className="space-y-6">
+                            {reviews.length === 0 ? (
+                                <div className="text-center py-12">
+                                    <svg
+                                        className="w-12 h-12 text-gray-300 mx-auto mb-3"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                                        />
+                                    </svg>
+                                    <p className="text-gray-500">
+                                        No reviews yet. Be the first to share your experience!
                                     </p>
                                 </div>
-                            ))}
+                            ) : (
+                                reviews.map((review) => (
+                                    <div
+                                        key={review._id}
+                                        className="pb-6 border-b border-gray-200 last:border-0"
+                                    >
+                                        <div className="flex items-start justify-between gap-4 mb-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium">
+                                                    {review.user.email.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">
+                                                        {review.user.email}
+                                                    </p>
+                                                    {renderStars(review.rating)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p className="text-gray-700 leading-relaxed ml-13">
+                                            {review.comment}
+                                        </p>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
-
                 </div>
             </div>
         </Layout>

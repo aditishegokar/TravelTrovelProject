@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-// import Chat from "./pages/Chat";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { Destinations } from "./pages/Destinations";
@@ -47,7 +46,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          import Favorites from "./pages/Favorites";
 
           <Route
             path="/favorites"
@@ -58,7 +56,6 @@ function App() {
             }
           />
 
-          import Chat from "./pages/Chat";
 
           <Route
             path="/chat"

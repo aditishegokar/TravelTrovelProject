@@ -1,17 +1,42 @@
 const DestinationGuide = require("../models/DestinationGuide");
 
-// SEARCH DESTINATION GUIDES
-exports.searchGuides = async (req, res, next) => {
+// GET DESTINATION GUIDES (TRENDING OR SEARCH)
+exports.getGuides = async (req, res, next) => {
     try {
         const { query } = req.query;
 
-        if (!query || query.trim() === "") {
-            return res.status(400).json({ error: "Invalid search query" });
-        }
+        let guides;
 
-        const guides = await DestinationGuide.find({
-            title: { $regex: query, $options: "i" },
-        }).select("title summary photos");
+        if (query && query.trim() !== "") {
+            // If there's a search query, find matching guides
+            guides = await DestinationGuide.find({
+                title: { $regex: query, $options: "i" },
+            }).select("title summary photos");
+        } else {
+            // If there's no search query, get trending guides (most reviewed)
+            guides = await DestinationGuide.aggregate([
+                {
+                    $addFields: {
+                        reviewCount: { $size: "$reviews" },
+                    },
+                },
+                {
+                    $sort: {
+                        reviewCount: -1,
+                    },
+                },
+                {
+                    $limit: 10,
+                },
+                {
+                    $project: {
+                        title: 1,
+                        summary: 1,
+                        photos: 1,
+                    },
+                },
+            ]);
+        }
 
         res.status(200).json({
             destinationGuides: guides,

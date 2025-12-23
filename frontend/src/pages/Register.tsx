@@ -6,67 +6,148 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
         try {
             await registerUser(email, password);
-            navigate("/login");
+            setSuccess(true);
+            setTimeout(() => navigate("/login"), 2000);
         } catch (err: any) {
             setError(err.response?.data?.error || "Registration failed");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div style={styles.container}>
-            <h2>Register</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+            <div className="w-full max-w-md">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                        Create Account
+                    </h1>
+                    <p className="text-gray-600">
+                        Sign up to get started with your account
+                    </p>
+                </div>
 
-            {error && <p style={styles.error}>{error}</p>}
+                {/* Form Card */}
+                <div className="bg-white rounded-lg border border-gray-200 p-8">
+                    {/* Error Message */}
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                            <svg
+                                className="w-5 h-5 text-red-600 mt-0.5 shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                            <p className="text-sm text-red-800">{error}</p>
+                        </div>
+                    )}
 
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
+                    {/* Success Message */}
+                    {success && (
+                        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
+                            <svg
+                                className="w-5 h-5 text-green-600 mt-0.5 shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                            <p className="text-sm text-green-800">
+                                Account created successfully! Redirecting to login...
+                            </p>
+                        </div>
+                    )}
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-gray-700 mb-2"
+                            >
+                                Email Address
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="you@example.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all"
+                            />
+                        </div>
 
-                <button type="submit">Register</button>
-            </form>
+                        <div>
+                            <label
+                                htmlFor="password"
+                                className="block text-sm font-medium text-gray-700 mb-2"
+                            >
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="Create a strong password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                minLength={6}
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all"
+                            />
+                            <p className="mt-2 text-xs text-gray-500">
+                                Must be at least 6 characters long
+                            </p>
+                        </div>
 
-            <p>
-                Already have an account? <Link to="/login">Login</Link>
-            </p>
+                        <button
+                            type="submit"
+                            disabled={loading || success}
+                            className="w-full py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? "Creating account..." : success ? "Success!" : "Create Account"}
+                        </button>
+                    </form>
+                </div>
+
+                {/* Login Link */}
+                <p className="text-center mt-6 text-gray-600">
+                    Already have an account?{" "}
+                    <Link
+                        to="/login"
+                        className="font-medium text-gray-900 hover:underline"
+                    >
+                        Sign in
+                    </Link>
+                </p>
+            </div>
         </div>
     );
-};
-
-const styles = {
-    container: {
-        width: "300px",
-        margin: "100px auto",
-        textAlign: "center" as const,
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column" as const,
-        gap: "10px",
-    },
-    error: {
-        color: "red",
-    },
 };
 
 export default Register;
