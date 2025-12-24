@@ -3,14 +3,16 @@ import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
     token: string | null;
-    userId: string | null; // Add userId to the context type
+    userId: string | null;
+    role: string | null; // Add role to the context type
     login: (token: string) => void;
     logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
     token: null,
-    userId: null, // Default userId to null
+    userId: null,
+    role: null, // Default role to null
     login: () => { },
     logout: () => { },
 });
@@ -20,12 +22,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.getItem("token")
     );
     const [userId, setUserId] = useState<string | null>(null);
+    const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
         if (token) {
             try {
                 const decodedToken: any = jwtDecode(token);
-                setUserId(decodedToken.id); // Assuming the user ID is in the 'id' field of the decoded token
+                setUserId(decodedToken.id);
+                setRole(decodedToken.role); // Assuming role is in the 'role' field
             } catch (error) {
                 console.error("Failed to decode token:", error);
                 setToken(null);
@@ -40,20 +44,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             const decodedToken: any = jwtDecode(newToken);
             setUserId(decodedToken.id);
+            setRole(decodedToken.role);
         } catch (error) {
             console.error("Failed to decode new token on login:", error);
             setUserId(null);
+            setRole(null);
         }
     };
 
     const logout = () => {
         localStorage.removeItem("token");
         setToken(null);
-        setUserId(null); // Clear userId on logout
+        setUserId(null);
+        setRole(null); // Clear role on logout
     };
 
     return (
-        <AuthContext.Provider value={{ token, userId, login, logout }}>
+        <AuthContext.Provider value={{ token, userId, role, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

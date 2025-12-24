@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import { getDestinationById } from "../api/destination.api";
 import { DestinationGuide } from "../types/destination";
@@ -7,12 +7,22 @@ import { addFavorite } from "../api/favorite.api";
 import { getReviews, addReview } from "../api/review.api";
 import { Review } from "../types/review";
 import { getOrCreateConversation } from "../api/chat.api";
-import { AuthContext } from "../context/AuthContext"; // Import AuthContext
+import { AuthContext } from "../context/AuthContext";
+
+const isValidImageUrl = (url: string) => {
+    try {
+        const u = new URL(url);
+        // Basic check for common image extensions
+        return /\.(png|jpe?g|webp|gif|avif)$/i.test(u.pathname);
+    } catch {
+        return false;
+    }
+};
 
 const DestinationDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { userId } = useContext(AuthContext); // Get userId from AuthContext
+    const { userId, role } = useContext(AuthContext);
     const [data, setData] = useState<DestinationGuide | null>(null);
     const [loading, setLoading] = useState(true);
     const [favoriteLoading, setFavoriteLoading] = useState(false);
@@ -73,7 +83,11 @@ const DestinationDetails = () => {
         }
     };
 
-    const renderStars = (count: number, interactive = false, onSelect?: (n: number) => void) => {
+    const renderStars = (
+        count: number,
+        interactive = false,
+        onSelect?: (n: number) => void
+    ) => {
         return (
             <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -126,43 +140,138 @@ const DestinationDetails = () => {
         );
     }
 
+    const validPhotos = (data.photos || []).filter((p) => isValidImageUrl(p));
+    const heroPhoto = validPhotos[0];
+
     return (
         <Layout>
             <div className="min-h-screen bg-white">
-                <div className="max-w-4xl mx-auto px-4 py-12">
-                    {/* HEADER */}
+                {/* HERO IMAGE */}
+                {heroPhoto && (
+                    <div className="w-full h-64 md:h-80 lg:h-96 overflow-hidden bg-gray-100">
+                        <img
+                            src={heroPhoto}
+                            alt={data.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                        />
+                    </div>
+                )}
+
+                <div className="max-w-4xl mx-auto px-4 py-10">
+                    {/* TITLE + META + ACTIONS */}
                     <div className="mb-8">
                         <div className="flex items-start justify-between gap-4 mb-4">
-                            <h1 className="text-4xl font-bold text-gray-900 leading-tight">
-                                {data.title}
-                            </h1>
-                            <button
-                                onClick={handleFavorite}
-                                disabled={favoriteLoading}
-                                className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
-                            >
-                                <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+                            <div>
+                                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                                    {data.title}
+                                </h1>
+                                <p className="mt-3 text-sm text-gray-500 max-w-xl">
+                                    {data.summary}
+                                </p>
+                            </div>
+
+                            <div className="flex flex-col items-end gap-3">
+                                <button
+                                    onClick={handleFavorite}
+                                    disabled={favoriteLoading}
+                                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                                    />
-                                </svg>
-                                <span className="text-sm font-medium">
-                                    {favoriteLoading ? "Adding..." : "Save"}
-                                </span>
-                            </button>
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                        />
+                                    </svg>
+                                    <span className="text-sm font-medium">
+                                        {favoriteLoading ? "Adding..." : "Save"}
+                                    </span>
+                                </button>
+
+                                {role === "admin" && id && (
+                                    <Link to={`/destinations/edit/${id}`}>
+                                        <button className="flex items-center gap-2 px-4 py-2 border border-transparent bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors shrink-0 text-sm">
+                                            <svg
+                                                className="w-5 h-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L14.732 3.732z"
+                                                />
+                                            </svg>
+                                            <span>Edit</span>
+                                        </button>
+                                    </Link>
+                                )}
+                            </div>
                         </div>
-                        <p className="text-lg text-gray-600 leading-relaxed">
+
+                        <p className="text-lg text-gray-700 leading-relaxed">
                             {data.description}
                         </p>
                     </div>
+
+                    {/* IMAGE GALLERY */}
+                    {validPhotos.length > 1 && (
+                        <div className="mb-10">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+                                Photos
+                            </h2>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                {validPhotos.slice(1).map((photo, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="overflow-hidden rounded-lg bg-gray-100"
+                                    >
+                                        <img
+                                            src={photo}
+                                            alt={`${data.title} photo ${idx + 2}`}
+                                            className="w-full h-32 sm:h-40 object-cover hover:scale-105 transition-transform"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* HISTORY & CULTURE (optional, from schema) */}
+                    {(data.history || data.culture) && (
+                        <div className="mb-10 grid gap-6 md:grid-cols-2 border-t border-gray-200 pt-8">
+                            {data.history && (
+                                <div>
+                                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                                        History
+                                    </h2>
+                                    <p className="text-gray-700 leading-relaxed">
+                                        {data.history}
+                                    </p>
+                                </div>
+                            )}
+                            {data.culture && (
+                                <div>
+                                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                                        Culture
+                                    </h2>
+                                    <p className="text-gray-700 leading-relaxed">
+                                        {data.culture}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* ATTRACTIONS */}
                     {data.attractions && data.attractions.length > 0 && (
@@ -202,9 +311,60 @@ const DestinationDetails = () => {
                         </div>
                     )}
 
-                    {/* REVIEWS SECTION */}
+                    {/* RECOMMENDATIONS (lodging / dining / activities) */}
+                    {data.recommendations &&
+                        (data.recommendations.lodging?.length ||
+                            data.recommendations.dining?.length ||
+                            data.recommendations.activities?.length) && (
+                            <div className="mb-12 pb-12 border-b border-gray-200">
+                                <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+                                    Recommendations
+                                </h2>
+                                <div className="grid gap-6 md:grid-cols-3">
+                                    {data.recommendations.lodging?.length ? (
+                                        <div>
+                                            <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                                                Lodging
+                                            </h3>
+                                            <ul className="space-y-1.5 text-sm text-gray-700">
+                                                {data.recommendations.lodging.map((item, i) => (
+                                                    <li key={i}>• {item}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ) : null}
+
+                                    {data.recommendations.dining?.length ? (
+                                        <div>
+                                            <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                                                Dining
+                                            </h3>
+                                            <ul className="space-y-1.5 text-sm text-gray-700">
+                                                {data.recommendations.dining.map((item, i) => (
+                                                    <li key={i}>• {item}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ) : null}
+
+                                    {data.recommendations.activities?.length ? (
+                                        <div>
+                                            <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                                                Activities
+                                            </h3>
+                                            <ul className="space-y-1.5 text-sm text-gray-700">
+                                                {data.recommendations.activities.map((item, i) => (
+                                                    <li key={i}>• {item}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ) : null}
+                                </div>
+                            </div>
+                        )}
+
+                    {/* REVIEWS (unchanged layout, just kept with your improved styles) */}
                     <div>
-                        {/* Reviews Header */}
                         <div className="mb-8">
                             <h2 className="text-2xl font-semibold text-gray-900 mb-3">
                                 Reviews
@@ -221,7 +381,6 @@ const DestinationDetails = () => {
                             </div>
                         </div>
 
-                        {/* ADD REVIEW FORM */}
                         <div className="mb-12 p-6 bg-gray-50 rounded-lg border border-gray-200">
                             <h3 className="text-lg font-semibold text-gray-900 mb-4">
                                 Write a Review
@@ -255,7 +414,6 @@ const DestinationDetails = () => {
                             </div>
                         </div>
 
-                        {/* REVIEWS LIST */}
                         <div className="space-y-6">
                             {reviews.length === 0 ? (
                                 <div className="text-center py-12">
@@ -285,16 +443,18 @@ const DestinationDetails = () => {
                                         <div className="flex items-start justify-between gap-4 mb-3">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium">
-                                                    {review.user ? review.user.email.charAt(0).toUpperCase() : 'U'}
+                                                    {review.user
+                                                        ? review.user.email.charAt(0).toUpperCase()
+                                                        : "U"}
                                                 </div>
                                                 <div>
                                                     <p className="font-medium text-gray-900">
-                                                        {review.user ? review.user.email : 'Unknown User'}
+                                                        {review.user ? review.user.email : "Unknown User"}
                                                     </p>
                                                     {renderStars(review.rating)}
                                                 </div>
                                             </div>
-                                            {/* Conditionally render chat button */}
+
                                             {review.user && review.user._id !== userId && (
                                                 <button
                                                     onClick={() => handleChatWithReviewer(review.user)}

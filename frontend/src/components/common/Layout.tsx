@@ -1,5 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 interface LayoutProps {
     children: ReactNode;
@@ -7,6 +8,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
     const navigate = useNavigate();
+    const { role } = useContext(AuthContext);
 
     const logout = () => {
         localStorage.removeItem("token");
@@ -14,16 +16,23 @@ const Layout = ({ children }: LayoutProps) => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 px-4 py-2">
             {/* Navbar */}
             <nav className="bg-white shadow-sm sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                <div className="flex items-center justify-between py-4">
                     {/* Logo */}
-                    <div
-                        className="text-2xl font-bold text-blue-600 cursor-pointer"
-                        onClick={() => navigate("/")}
-                    >
-                        TravelTrove
+                    <div className="flex items-center gap-4">
+                        <div
+                            className="text-2xl font-bold text-blue-600 cursor-pointer"
+                            onClick={() => navigate("/")}
+                        >
+                            TravelTrove
+                        </div>
+                        {role === 'admin' && (
+                            <span className="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                Admin
+                            </span>
+                        )}
                     </div>
 
                     {/* Navigation */}
@@ -73,7 +82,7 @@ const Layout = ({ children }: LayoutProps) => {
             </nav>
 
             {/* Page Content */}
-            <main className="max-w-7xl mx-auto px-6 py-8">{children}</main>
+            <main className="py-4">{children}</main>
         </div>
     );
 };

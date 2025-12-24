@@ -2,13 +2,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import AdminRoute from "./components/common/AdminRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { Destinations } from "./pages/Destinations";
 import DestinationDetails from "./pages/DestinationDetails";
+import CreateDestination from "./pages/CreateDestination";
 import CreateItinerary from "./pages/CreateItinerary";
 import ViewItinerary from "./pages/ViewItinerary";
 import MyItineraries from "./pages/MyItineraries";
 import EditItinerary from "./pages/EditItinerary";
+import EditDestination from "./pages/EditDestination";
 import Favorites from "./pages/Favorite";
 import Chat from "./pages/Chat";
 
@@ -22,6 +25,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Destinations />} />
           <Route path="/destinations/:id" element={<DestinationDetails />} />
+          <Route path="/destinations/create" element={<AdminRoute />}>
+            <Route path="" element={<CreateDestination />} />
+          </Route>
+          <Route path="/destinations/edit/:id" element={<AdminRoute />}>
+            <Route path="" element={<EditDestination />} />
+          </Route>
           <Route
             path="/itinerary/create"
             element={

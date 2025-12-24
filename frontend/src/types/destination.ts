@@ -4,5 +4,12 @@ export interface DestinationGuide {
     summary: string;
     description: string;
     photos: string[];
+    history: string;
+    culture: string;
     attractions: string[];
+    recommendations: {
+        lodging: string[];
+        dining: string[];
+        activities: string[];
+    };
 }
