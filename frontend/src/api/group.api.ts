@@ -6,6 +6,11 @@ export const createGroup = async (group: Partial<IGroup>) => {
     return response.data;
 };
 
+export const getAllGroups = async () => {
+    const response = await api.get("/groups");
+    return response.data;
+};
+
 export const getMyGroups = async () => {
     const response = await api.get("/groups/my");
     return response.data;

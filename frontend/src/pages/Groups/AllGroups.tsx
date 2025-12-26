@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { getMyGroups } from '../../api/group.api';
+import { getAllGroups } from '../../api/group.api';
 import { IGroup } from '../../types/group';
 import GroupCard from './GroupCard';
-import { Link } from 'react-router-dom';
 
-const MyGroups: React.FC = () => {
+const AllGroups: React.FC = () => {
     const [groups, setGroups] = useState<IGroup[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchGroups = async () => {
             try {
-                const myGroups = await getMyGroups();
-                setGroups(myGroups);
+                const allGroups = await getAllGroups();
+                setGroups(allGroups);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -26,7 +25,7 @@ const MyGroups: React.FC = () => {
         return (
             <div className="flex flex-col items-center justify-center py-20">
                 <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-900"></div>
-                <p className="mt-4 text-gray-600 text-sm">Loading your groups...</p>
+                <p className="mt-4 text-gray-600 text-sm">Loading groups...</p>
             </div>
         );
     }
@@ -48,16 +47,11 @@ const MyGroups: React.FC = () => {
                     />
                 </svg>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                    You haven't joined any groups yet
+                    No groups available
                 </h3>
-                <p className="text-gray-500 text-sm mb-6">
-                    Create or join a group to connect with travelers
+                <p className="text-gray-500 text-sm">
+                    Be the first to create a group and start connecting
                 </p>
-                <Link to="/groups/create">
-                    <button className="px-5 py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm">
-                        Create Your First Group
-                    </button>
-                </Link>
             </div>
         );
     }
@@ -73,4 +67,4 @@ const MyGroups: React.FC = () => {
     );
 };
 
-export default MyGroups;
+export default AllGroups;

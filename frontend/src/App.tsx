@@ -19,6 +19,7 @@ import CreateGroup from "./pages/Groups/CreateGroup";
 import GroupDetails from "./pages/Groups/GroupDetails";
 
 
+
 function App() {
   return (
     <AuthProvider>
@@ -104,6 +105,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
 
 
 

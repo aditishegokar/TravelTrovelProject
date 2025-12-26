@@ -31,6 +31,17 @@ const createGroup = async (req, res) => {
   }
 };
 
+const getAllGroups = async (req, res) => {
+    try {
+        const groups = await Group.find({})
+            .populate('owner', 'username email')
+            .populate('members', 'username email');
+        res.json(groups);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 const getMyGroups = async (req, res) => {
     try {
         const groups = await Group.find({ members: req.user._id })
@@ -172,6 +183,7 @@ const getGroupConversationId = async (req, res) => {
 
 module.exports = {
   createGroup,
+  getAllGroups,
   getMyGroups,
   getPublicGroups,
   getGroupById,

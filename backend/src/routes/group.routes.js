@@ -5,6 +5,7 @@ const protect = require('../middlewares/auth.middleware');
 const router = express.Router();
 
 router.post('/', protect, groupController.createGroup);
+router.get('/', protect, groupController.getAllGroups);
 router.get('/my', protect, groupController.getMyGroups);
 router.get('/public', protect, groupController.getPublicGroups);
 router.get('/:id', protect, groupController.getGroupById);
