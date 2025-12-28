@@ -92,15 +92,7 @@ import Layout from "../components/common/Layout";
 import { getFavorites, removeFavorite } from "../api/favorite.api";
 import { FavoriteItem } from "../types/favorite";
 import { useNavigate } from "react-router-dom";
-
-// Example images array
-const cardImages = [
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1519817650390-64a93db5111e?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-];
+import FavoriteImg from "../assets/Favorite.jpg"; // Local JPG
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
@@ -122,78 +114,89 @@ const Favorites = () => {
 
   return (
     <Layout>
+      {/* Background with dark overlay */}
       <div
-        className="min-h-screen relative bg-gray-100 py-14 px-4"
+        className="min-h-screen py-14 px-6 bg-center bg-cover relative"
+        style={{
+          backgroundImage: `url(${FavoriteImg})`, // Local JPG
+        }}
       >
-        <h2 className="text-4xl font-bold text-gray-900 text-center mb-10">
-          My Favorites
-        </h2>
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60" />
 
-        {favorites.length === 0 && (
-          <p className="text-center text-gray-500">
-            No favorites added yet.
-          </p>
-        )}
+        {/* Content */}
+        <div className="relative z-10">
+          <h2
+            className="text-4xl font-bold text-white text-center mb-12"
+            style={{
+              textShadow: "2px 2px 12px rgba(0,0,0,0.8)",
+            }}
+          >
+            My Favorites
+          </h2>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: "1.25rem",
-          }}
-        >
-          {favorites.map((fav, index) => {
-            // Cycle through cardImages array
-            const bgImage = cardImages[index % cardImages.length];
+          {favorites.length === 0 && (
+            <p className="text-center text-gray-200">
+              No favorites added yet.
+            </p>
+          )}
 
-            return (
+          {/* 3 cards per row */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "2rem",
+            }}
+          >
+            {favorites.map((fav) => (
               <div
                 key={fav._id}
                 style={{
-                  backgroundImage: `url(${bgImage})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backdropFilter: "blur(6px)",
-                  borderRadius: "18px",
-                  padding: "1.5rem",
+                  background:
+                    "linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.12))",
+                  backdropFilter: "blur(18px)",
+                  WebkitBackdropFilter: "blur(18px)",
+                  borderRadius: "22px",
+                  padding: "1.75rem",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  boxShadow: "0 12px 40px rgba(0, 0, 0, 0.25)",
-                  transition: "transform 0.3s, box-shadow 0.3s",
-                  border: "1px solid rgba(255,255,255,0.2)",
+                  border: "1px solid rgba(255,255,255,0.35)",
+                  boxShadow: "0 15px 45px rgba(0,0,0,0.45)",
                   color: "#fff",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.transform =
-                    "translateY(-6px)";
-                  (e.currentTarget as HTMLDivElement).style.boxShadow =
-                    "0 18px 50px rgba(0,0,0,0.35)";
+                  e.currentTarget.style.transform = "translateY(-8px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 22px 60px rgba(0,0,0,0.6)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.transform =
-                    "translateY(0)";
-                  (e.currentTarget as HTMLDivElement).style.boxShadow =
-                    "0 12px 40px rgba(0, 0, 0, 0.25)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 15px 45px rgba(0,0,0,0.45)";
                 }}
               >
                 <div>
                   <p
                     style={{
-                      fontSize: "0.8rem",
+                      fontSize: "0.85rem",
+                      opacity: 0.95,
+                      textShadow: "1px 1px 6px rgba(0,0,0,0.8)",
                       marginBottom: "0.25rem",
-                      textShadow: "1px 1px 6px rgba(0,0,0,0.6)",
                     }}
                   >
                     {fav.type === "destination-guide"
                       ? "Destination Guide"
                       : "Trip Itinerary"}
                   </p>
+
                   <p
                     style={{
                       fontWeight: 600,
-                      fontSize: "1rem",
-                      textShadow: "1px 1px 8px rgba(0,0,0,0.7)",
+                      fontSize: "1.05rem",
+                      textShadow: "1px 1px 8px rgba(0,0,0,0.9)",
                     }}
                   >
                     {fav.type === "destination-guide"
@@ -207,59 +210,25 @@ const Favorites = () => {
                     onClick={() =>
                       navigate(
                         fav.type === "destination-guide"
-                          ? `/destinations/${fav.destinationGuide?._id}`
+                          ? `/guide/${fav.destinationGuide?._id}`
                           : `/itinerary/${fav.tripItinerary?._id}`
                       )
                     }
-                    style={{
-                      background: "rgba(0,0,0,0.4)",
-                      color: "#fff",
-                      padding: "0.5rem 1rem",
-                      borderRadius: "8px",
-                      border: "none",
-                      cursor: "pointer",
-                      fontWeight: 500,
-                      transition: "background 0.3s",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget as HTMLButtonElement).style.background =
-                        "rgba(0,0,0,0.6)"
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget as HTMLButtonElement).style.background =
-                        "rgba(0,0,0,0.4)"
-                    }
+                    className="px-4 py-2 rounded-lg bg-black/50 hover:bg-black/70 transition text-white"
                   >
                     View
                   </button>
 
                   <button
                     onClick={() => handleRemove(fav._id)}
-                    style={{
-                      background: "rgba(255,0,0,0.4)",
-                      color: "#fff",
-                      padding: "0.5rem 1rem",
-                      borderRadius: "8px",
-                      border: "none",
-                      cursor: "pointer",
-                      fontWeight: 500,
-                      transition: "background 0.3s",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget as HTMLButtonElement).style.background =
-                        "rgba(255,0,0,0.6)"
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget as HTMLButtonElement).style.background =
-                        "rgba(255,0,0,0.4)"
-                    }
+                    className="px-4 py-2 rounded-lg bg-red-600/50 hover:bg-red-600/70 transition text-white"
                   >
                     Remove
                   </button>
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </Layout>
@@ -267,3 +236,4 @@ const Favorites = () => {
 };
 
 export default Favorites;
+

@@ -75,11 +75,129 @@
 
 // export default MyGroups;
 
+// import React, { useEffect, useState } from "react";
+// import { getMyGroups } from "../../api/group.api";
+// import { IGroup } from "../../types/group";
+// import GroupCard from "./GroupCard";
+// import { Link } from "react-router-dom";
+
+// const MyGroups: React.FC = () => {
+//   const [groups, setGroups] = useState<IGroup[]>([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchGroups = async () => {
+//       try {
+//         const myGroups = await getMyGroups();
+//         setGroups(myGroups);
+//       } catch (error) {
+//         console.error("Failed to fetch my groups", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchGroups();
+//   }, []);
+
+//   return (
+//     /* ===== BACKGROUND ===== */
+//     <div
+//       className="min-h-screen relative bg-cover bg-center px-6 py-16"
+//       style={{
+//         backgroundImage:
+//           "url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1950&q=80')",
+//       }}
+//     >
+//       {/* Overlay */}
+//       <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-emerald-900/60 to-teal-900/70" />
+
+//       {/* Glow */}
+//       <div className="absolute top-24 left-12 w-72 h-72 bg-emerald-500/30 rounded-full blur-3xl" />
+//       <div className="absolute bottom-24 right-12 w-72 h-72 bg-teal-500/30 rounded-full blur-3xl" />
+
+//       {/* ===== CONTENT ===== */}
+//       <div className="relative z-10 max-w-7xl mx-auto">
+//         {/* Header */}
+//         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10">
+//           <h1 className="text-3xl font-bold text-white mb-3 sm:mb-0">
+//             My Groups
+//           </h1>
+//           <p className="text-emerald-200 text-sm">
+//             Communities you’re part of
+//           </p>
+//         </div>
+
+//         {/* ===== LOADING STATE ===== */}
+//         {loading && (
+//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+//             {[1, 2, 3, 4, 5, 6].map((i) => (
+//               <div
+//                 key={i}
+//                 className="animate-pulse bg-white/20 backdrop-blur-xl
+//                            border border-white/30 rounded-2xl p-6"
+//               >
+//                 <div className="h-4 bg-white/30 rounded w-3/4 mb-3" />
+//                 <div className="h-3 bg-white/30 rounded w-full mb-2" />
+//                 <div className="h-3 bg-white/30 rounded w-5/6" />
+//                 <div className="mt-4 h-8 bg-white/30 rounded w-1/2" />
+//               </div>
+//             ))}
+//           </div>
+//         )}
+
+//         {/* ===== EMPTY STATE ===== */}
+//         {!loading && groups.length === 0 && (
+//           <div className="flex flex-col items-center justify-center py-32 text-center text-white">
+//             <div className="text-6xl mb-4">👥</div>
+//             <h2 className="text-2xl font-semibold mb-2">
+//               You haven’t joined any groups yet
+//             </h2>
+//             <p className="text-emerald-200 max-w-md mb-6">
+//               Start or join a group to connect with travelers and build your
+//               community.
+//             </p>
+//             <Link to="/groups/create">
+//               <button className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-semibold text-white transition">
+//                 Create Your First Group
+//               </button>
+//             </Link>
+//           </div>
+//         )}
+
+//         {/* ===== GROUPS GRID ===== */}
+//         {!loading && groups.length > 0 && (
+//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+//             {groups.map((group) => (
+//               <div
+//                 key={group._id}
+//                 className="bg-white/20 backdrop-blur-xl
+//                            border border-white/30
+//                            rounded-2xl shadow-xl
+//                            hover:shadow-2xl hover:-translate-y-1
+//                            transition-all duration-300"
+//               >
+//                 <GroupCard group={group} />
+//               </div>
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MyGroups;
+
+
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getMyGroups } from "../../api/group.api";
 import { IGroup } from "../../types/group";
 import GroupCard from "./GroupCard";
-import { Link } from "react-router-dom";
+
+// ✅ Import local AVIF background image
+import myGroupsBg from "../../assets/MyGroups.avif";
 
 const MyGroups: React.FC = () => {
   const [groups, setGroups] = useState<IGroup[]>([]);
@@ -105,14 +223,13 @@ const MyGroups: React.FC = () => {
     <div
       className="min-h-screen relative bg-cover bg-center px-6 py-16"
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1950&q=80')",
+        backgroundImage: `url(${myGroupsBg})`,
       }}
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-emerald-900/60 to-teal-900/70" />
 
-      {/* Glow */}
+      {/* Glow Effects */}
       <div className="absolute top-24 left-12 w-72 h-72 bg-emerald-500/30 rounded-full blur-3xl" />
       <div className="absolute bottom-24 right-12 w-72 h-72 bg-teal-500/30 rounded-full blur-3xl" />
 

@@ -158,12 +158,20 @@
 
 // export default GroupChat;
 
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import { getMessages, sendMessage } from "../../api/chat.api";
 import { getGroupConversationId } from "../../api/group.api";
 import { ChatMessage } from "../../types/chat";
 import { AuthContext } from "../../context/AuthContext";
 import { linkifyText } from "../../utils/linkify-text";
+
+// ✅ Import local AVIF background
+import groupChatBg from "../../assets/GroupChat.avif";
 
 interface GroupChatProps {
   groupId: string;
@@ -238,8 +246,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ groupId }) => {
     <div
       className="relative h-[500px] lg:h-[600px] rounded-2xl overflow-hidden"
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1950&q=80')",
+        backgroundImage: `url(${groupChatBg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

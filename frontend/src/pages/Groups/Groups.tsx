@@ -87,6 +87,9 @@ import MyGroups from "./MyGroups";
 import PublicGroups from "./PublicGroups";
 import AllGroups from "./AllGroups";
 
+// ✅ Import local AVIF background image
+import groupsBg from "../../assets/Groups.avif";
+
 const Groups: React.FC = () => {
   const [activeTab, setActiveTab] = useState("all-groups");
 
@@ -102,8 +105,7 @@ const Groups: React.FC = () => {
       <div
         className="min-h-screen relative"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1950&q=80')",
+          backgroundImage: `url(${groupsBg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -116,18 +118,18 @@ const Groups: React.FC = () => {
           {/* ===== HEADER ===== */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-10">
             <div>
-              <h1 className="text-4xl font-bold text-white">
-                Groups
-              </h1>
+              <h1 className="text-4xl font-bold text-white">Groups</h1>
               <p className="mt-2 text-sm text-white/80">
                 Connect, collaborate & explore communities
               </p>
             </div>
 
             <Link to="/groups/create">
-              <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
-                                 bg-indigo-600 text-white text-sm font-medium
-                                 hover:bg-indigo-500 transition shadow-lg">
+              <button
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
+                           bg-indigo-600 text-white text-sm font-medium
+                           hover:bg-indigo-500 transition shadow-lg"
+              >
                 <svg
                   className="w-4 h-4"
                   fill="none"

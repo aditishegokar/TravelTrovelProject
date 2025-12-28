@@ -1,49 +1,187 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { IGroup } from '../../types/group';
+// import React from "react";
+// import { Link } from "react-router-dom";
+// import { IGroup } from "../../types/group";
+
+// interface GroupCardProps {
+//   group: IGroup;
+// }
+
+// const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
+//   return (
+//     <div
+//       className="
+//         relative
+//         rounded-[28px]
+//         overflow-hidden
+//         shadow-xl
+//         transition-all duration-300
+//         hover:-translate-y-1
+//       "
+//       style={{
+//         backgroundImage:
+//           "url('https://static2.tripoto.com/media/filter/tst/img/375263/TripDocument/1511196319_trekking_1.jpg')",
+//         backgroundSize: "cover",
+//         backgroundPosition: "center",
+//       }}
+//     >
+//       {/* Dark overlay for readability */}
+//       <div className="absolute inset-0 bg-black/45"></div>
+
+//       {/* Glass overlay */}
+//       <div className="absolute inset-0 bg-white/10"></div>
+
+//       {/* Content */}
+//       <div className="relative z-10 p-6 text-white">
+//         {/* Header */}
+//         <div className="flex items-start justify-between mb-4">
+//           <div className="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
+//             <svg
+//               className="w-6 h-6 text-white"
+//               fill="none"
+//               stroke="currentColor"
+//               viewBox="0 0 24 24"
+//             >
+//               <path
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//                 strokeWidth={2}
+//                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+//               />
+//             </svg>
+//           </div>
+
+//           <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/30">
+//             {group.members.length} member
+//             {group.members.length !== 1 ? "s" : ""}
+//           </span>
+//         </div>
+
+//         {/* Title */}
+//         <h3 className="text-lg font-semibold mb-2 line-clamp-1">
+//           {group.name}
+//         </h3>
+
+//         {/* Description */}
+//         <p className="text-sm text-white/85 mb-5 line-clamp-2 leading-relaxed">
+//           {group.description}
+//         </p>
+
+//         {/* Button */}
+//         <Link to={`/groups/${group._id}`}>
+//           <button
+//             type="button"
+//             className="
+//               w-full
+//               py-2.5
+//               rounded-full
+//               bg-black/70
+//               hover:bg-black/80
+//               transition
+//               text-sm
+//               font-medium
+//             "
+//           >
+//             View Group
+//           </button>
+//         </Link>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default GroupCard;
+
+import React from "react";
+import { Link } from "react-router-dom";
+import { IGroup } from "../../types/group";
+
+// ✅ Import local JPG image
+import groupCardBg from "../../assets/GroupCard.jpg";
 
 interface GroupCardProps {
-    group: IGroup;
+  group: IGroup;
 }
 
 const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
-    return (
-        <div className="group bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
-            <div className="flex items-start justify-between mb-3">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <svg
-                        className="w-6 h-6 text-gray-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                    </svg>
-                </div>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    {group.members.length} member{group.members.length !== 1 ? 's' : ''}
-                </span>
-            </div>
+  return (
+    <div
+      className="
+        relative
+        rounded-[28px]
+        overflow-hidden
+        shadow-xl
+        transition-all duration-300
+        hover:-translate-y-1
+      "
+      style={{
+        backgroundImage: `url(${groupCardBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-black/45"></div>
 
-            <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
-                {group.name}
-            </h3>
-            <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-                {group.description}
-            </p>
+      {/* Glass overlay */}
+      <div className="absolute inset-0 bg-white/10"></div>
 
-            <Link to={`/groups/${group._id}`}>
-                <button className="w-full px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                    View Group
-                </button>
-            </Link>
+      {/* Content */}
+      <div className="relative z-10 p-6 text-white">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
+            <svg
+              className="w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </div>
+
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/30">
+            {group.members.length} member
+            {group.members.length !== 1 ? "s" : ""}
+          </span>
         </div>
-    );
+
+        {/* Title */}
+        <h3 className="text-lg font-semibold mb-2 line-clamp-1">
+          {group.name}
+        </h3>
+
+        {/* Description */}
+        <p className="text-sm text-white/85 mb-5 line-clamp-2 leading-relaxed">
+          {group.description}
+        </p>
+
+        {/* Button */}
+        <Link to={`/groups/${group._id}`}>
+          <button
+            type="button"
+            className="
+              w-full
+              py-2.5
+              rounded-full
+              bg-black/70
+              hover:bg-black/80
+              transition
+              text-sm
+              font-medium
+            "
+          >
+            View Group
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
 };
 
 export default GroupCard;

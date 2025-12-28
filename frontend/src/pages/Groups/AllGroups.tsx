@@ -69,10 +69,136 @@
 
 // export default AllGroups;
 
+// import React, { useEffect, useState } from "react";
+// import { getAllGroups } from "../../api/group.api";
+// import { IGroup } from "../../types/group";
+// import GroupCard from "./GroupCard";
+
+// const AllGroups: React.FC = () => {
+//   const [groups, setGroups] = useState<IGroup[]>([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchGroups = async () => {
+//       try {
+//         const allGroups = await getAllGroups();
+//         setGroups(allGroups);
+//       } catch (error) {
+//         console.error("Failed to fetch groups", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchGroups();
+//   }, []);
+
+//   return (
+//     <div
+//       className="min-h-screen relative bg-cover bg-center px-6 py-16"
+//       style={{
+//         backgroundImage:
+//           "url('https://s3.india.com/wp-content/uploads/2024/09/adventure-4.jpg?impolicy=Medium_Widthonly&w=350&h=263')",
+//       }}>
+//       {/* Dark overlay for readability */}
+//       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+
+//       {/* Ambient glows */}
+//       <div className="absolute top-20 left-16 w-80 h-80 bg-indigo-500/30 rounded-full blur-3xl" />
+//       <div className="absolute bottom-20 right-16 w-80 h-80 bg-purple-500/30 rounded-full blur-3xl" />
+
+//       <div className="relative z-10 max-w-7xl mx-auto">
+//         {/* Header */}
+//         <div className="mb-12 text-center">
+//           <h1 className="text-4xl font-bold text-white drop-shadow-lg">
+//             Discover Groups
+//           </h1>
+//           <p className="text-indigo-200 mt-2">
+//             Explore communities and travel together
+//           </p>
+//         </div>
+
+//         {/* Loading state */}
+//         {loading && (
+//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+//             {[1, 2, 3, 4, 5, 6].map((i) => (
+//               <div
+//                 key={i}
+//                 className="
+//                   animate-pulse
+//                   bg-white/20
+//                   backdrop-blur-3xl
+//                   border border-white/30
+//                   rounded-3xl
+//                   p-6
+//                 "
+//               >
+//                 <div className="h-4 bg-white/40 rounded w-3/4 mb-3" />
+//                 <div className="h-3 bg-white/40 rounded w-full mb-2" />
+//                 <div className="h-3 bg-white/40 rounded w-5/6" />
+//                 <div className="mt-4 h-8 bg-white/40 rounded w-1/2" />
+//               </div>
+//             ))}
+//           </div>
+//         )}
+
+//         {/* Empty state */}
+//         {!loading && groups.length === 0 && (
+//           <div className="flex flex-col items-center justify-center py-32 text-center text-white">
+//             <div className="text-6xl mb-4">🤖</div>
+//             <h2 className="text-2xl font-semibold mb-2">No groups found</h2>
+//             <p className="text-indigo-200 max-w-md">
+//               Be the first to create a group and start your journey.
+//             </p>
+//           </div>
+//         )}
+
+//         {/* Groups grid */}
+//         {!loading && groups.length > 0 && (
+//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+//             {groups.map((group) => (
+//               <div
+//                 key={group._id}
+//                 className="
+//                   relative
+//                   rounded-3xl
+//                   overflow-hidden
+//                   bg-white/10
+//                   backdrop-blur-3xl
+//                   border border-white/30
+//                   shadow-lg
+//                   hover:shadow-2xl
+//                   hover:-translate-y-2
+//                   transition-all duration-300
+//                 "
+//               >
+//                 {/* Subtle gradient overlay */}
+//                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-white/0" />
+
+//                 {/* Card content */}
+//                 <div className="relative z-10 p-6">
+//                   <GroupCard group={group} />
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AllGroups;
+
+
+
 import React, { useEffect, useState } from "react";
 import { getAllGroups } from "../../api/group.api";
 import { IGroup } from "../../types/group";
 import GroupCard from "./GroupCard";
+
+// ✅ Import local avif background
+import allGroupsBg from "../../assets/allgroupss.avif";
 
 const AllGroups: React.FC = () => {
   const [groups, setGroups] = useState<IGroup[]>([]);
@@ -94,78 +220,91 @@ const AllGroups: React.FC = () => {
   }, []);
 
   return (
-    /* ===== BACKGROUND ===== */
     <div
       className="min-h-screen relative bg-cover bg-center px-6 py-16"
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1950&q=80')",
+        backgroundImage: `url(${allGroupsBg})`,
       }}
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-indigo-900/60 to-purple-900/70" />
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
 
-      {/* Glow effects */}
-      <div className="absolute top-24 left-10 w-72 h-72 bg-indigo-500/30 rounded-full blur-3xl" />
-      <div className="absolute bottom-24 right-10 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl" />
+      {/* Ambient glows */}
+      <div className="absolute top-20 left-16 w-80 h-80 bg-indigo-500/30 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-16 w-80 h-80 bg-purple-500/30 rounded-full blur-3xl" />
 
-      {/* ===== CONTENT ===== */}
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10">
-          <h1 className="text-3xl font-bold text-white mb-3 sm:mb-0">
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl font-bold text-white drop-shadow-lg">
             Discover Groups
           </h1>
-          <p className="text-indigo-200 text-sm">
-            AI-curated communities just for you
+          <p className="text-indigo-200 mt-2">
+            Explore communities and travel together
           </p>
         </div>
 
-        {/* ===== LOADING STATE ===== */}
+        {/* Loading state */}
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="animate-pulse bg-white/20 backdrop-blur-xl
-                           border border-white/30 rounded-2xl p-6"
+                className="
+                  animate-pulse
+                  bg-white/20
+                  backdrop-blur-3xl
+                  border border-white/30
+                  rounded-3xl
+                  p-6
+                "
               >
-                <div className="h-4 bg-white/30 rounded w-3/4 mb-3" />
-                <div className="h-3 bg-white/30 rounded w-full mb-2" />
-                <div className="h-3 bg-white/30 rounded w-5/6" />
-                <div className="mt-4 h-8 bg-white/30 rounded w-1/2" />
+                <div className="h-4 bg-white/40 rounded w-3/4 mb-3" />
+                <div className="h-3 bg-white/40 rounded w-full mb-2" />
+                <div className="h-3 bg-white/40 rounded w-5/6" />
+                <div className="mt-4 h-8 bg-white/40 rounded w-1/2" />
               </div>
             ))}
           </div>
         )}
 
-        {/* ===== EMPTY STATE ===== */}
+        {/* Empty state */}
         {!loading && groups.length === 0 && (
           <div className="flex flex-col items-center justify-center py-32 text-center text-white">
             <div className="text-6xl mb-4">🤖</div>
-            <h2 className="text-2xl font-semibold mb-2">
-              No groups found
-            </h2>
+            <h2 className="text-2xl font-semibold mb-2">No groups found</h2>
             <p className="text-indigo-200 max-w-md">
-              Our AI couldn’t find any active groups yet.
-              Be the first to create one and start a community.
+              Be the first to create a group and start your journey.
             </p>
           </div>
         )}
 
-        {/* ===== GROUPS GRID ===== */}
+        {/* Groups grid */}
         {!loading && groups.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {groups.map((group) => (
               <div
                 key={group._id}
-                className="bg-white/20 backdrop-blur-xl
-                           border border-white/30
-                           rounded-2xl shadow-xl
-                           hover:shadow-2xl hover:-translate-y-1
-                           transition-all duration-300"
+                className="
+                  relative
+                  rounded-3xl
+                  overflow-hidden
+                  bg-white/10
+                  backdrop-blur-3xl
+                  border border-white/30
+                  shadow-lg
+                  hover:shadow-2xl
+                  hover:-translate-y-2
+                  transition-all duration-300
+                "
               >
-                <GroupCard group={group} />
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-white/0" />
+
+                {/* Card content */}
+                <div className="relative z-10 p-6">
+                  <GroupCard group={group} />
+                </div>
               </div>
             ))}
           </div>
@@ -176,3 +315,6 @@ const AllGroups: React.FC = () => {
 };
 
 export default AllGroups;
+
+
+

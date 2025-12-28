@@ -238,11 +238,162 @@
 
 // export default MyItineraries;
 
+// import { useEffect, useState } from "react";
+// import Layout from "../components/common/Layout";
+// import { getMyItineraries, deleteItinerary } from "../api/itinerary.api";
+// import { TripItinerary } from "../types/itinerary";
+// import { useNavigate } from "react-router-dom";
+
+// const MyItineraries = () => {
+//   const [data, setData] = useState<TripItinerary[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+//   const navigate = useNavigate();
+
+//   const load = async () => {
+//     setLoading(true);
+//     const res = await getMyItineraries();
+//     setData(res.data.itineraries);
+//     setLoading(false);
+//   };
+
+//   const handleDelete = async (id: string) => {
+//     if (!window.confirm("Are you sure you want to delete this itinerary?")) return;
+//     setDeleteLoading(id);
+//     try {
+//       await deleteItinerary(id);
+//       await load();
+//     } finally {
+//       setDeleteLoading(null);
+//     }
+//   };
+
+//   useEffect(() => {
+//     load();
+//   }, []);
+
+//   return (
+//     <Layout>
+//       <div
+//         className="min-h-screen bg-cover bg-center bg-no-repeat"
+//         style={{
+//           backgroundImage:
+//             "url('https://thelocaltourist.com/wp-content/uploads/2023/05/Road-Trip-Along-the-Coast.jpg')",
+//         }}
+//       >
+//         {/* Overlay */}
+//         <div className="min-h-screen backdrop-blur-sm bg-gradient-to-b from-black/20 via-black/10 to-black/30 px-6 py-12">
+//           {/* Header */}
+//           <div className="max-w-6xl mx-auto flex items-center justify-between mb-12 text-white">
+//             <div>
+//               <h1 className="text-4xl md:text-5xl font-extrabold drop-shadow-lg">
+//                 My Itineraries
+//               </h1>
+//               <p className="text-white/80 mt-2">
+//                 Plan and manage your upcoming trips ✈️
+//               </p>
+//             </div>
+//             <button
+//               onClick={() => navigate("/itinerary/create")}
+//               className="px-6 py-3 bg-white/20 text-white font-medium rounded-full backdrop-blur-lg border border-white/30 hover:bg-white/40 transition"
+//             >
+//               + Create New
+//             </button>
+//           </div>
+
+//           {/* Loading */}
+//           {loading ? (
+//             <div className="flex flex-col items-center justify-center text-white py-20">
+//               <div className="animate-spin h-12 w-12 border-4 border-white border-t-transparent rounded-full"></div>
+//               <p className="mt-4 text-white/90">Loading itineraries...</p>
+//             </div>
+//           ) : data.length === 0 ? (
+//             <div className="text-center text-white py-20">
+//               <h3 className="text-2xl font-semibold">No Itineraries Found</h3>
+//               <p className="text-white/70 mb-6">
+//                 Create your first travel plan now 🌍
+//               </p>
+//               <button
+//                 onClick={() => navigate("/itinerary/create")}
+//                 className="px-6 py-3 bg-white/20 text-white font-medium rounded-full backdrop-blur-lg border border-white/30 hover:bg-white/40 transition"
+//               >
+//                 Create Itinerary
+//               </button>
+//             </div>
+//           ) : (
+//             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
+//               {data.map((itinerary) => (
+//                 <div
+//                   key={itinerary._id}
+//                   className="rounded-3xl p-6 text-white bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 transition group"
+//                 >
+//                   {/* Destination */}
+//                   <h3 className="text-2xl font-bold truncate drop-shadow-md">
+//                     {itinerary.destination}
+//                   </h3>
+//                   <p className="text-white/80 flex items-center gap-2 mt-2">
+//                     <svg
+//                       className="w-5 h-5 text-white/80"
+//                       fill="none"
+//                       stroke="currentColor"
+//                       viewBox="0 0 24 24"
+//                     >
+//                       <path
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                         strokeWidth={2}
+//                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+//                       />
+//                     </svg>
+//                     {itinerary.duration} Days
+//                   </p>
+
+//                   {/* Actions */}
+//                   <div className="flex gap-3 mt-6 pt-4 border-t border-white/20">
+//                     <button
+//                       onClick={() => navigate(`/itinerary/${itinerary._id}`)}
+//                       className="flex-1 py-2 px-4 rounded-full bg-white/20 hover:bg-white/40 transition flex justify-center items-center gap-1"
+//                     >
+//                       👁️ View
+//                     </button>
+
+//                     <button
+//                       onClick={() =>
+//                         navigate(`/itinerary/edit/${itinerary._id}`)
+//                       }
+//                       className="px-4 py-2 rounded-full bg-white/20 hover:bg-white/40 transition flex justify-center items-center gap-1"
+//                     >
+//                       ✏️ Edit
+//                     </button>
+
+//                     <button
+//                       onClick={() => handleDelete(itinerary._id)}
+//                       disabled={deleteLoading === itinerary._id}
+//                       className="px-4 py-2 rounded-full bg-gradient-to-r from-red-400/50 to-red-600/50 hover:from-red-500/60 hover:to-red-700/60 transition disabled:opacity-50 flex justify-center items-center gap-1"
+//                     >
+//                       {deleteLoading === itinerary._id ? "..." : "🗑️ Delete"}
+//                     </button>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </Layout>
+//   );
+// };
+
+// export default MyItineraries;
+
+
+
 import { useEffect, useState } from "react";
 import Layout from "../components/common/Layout";
 import { getMyItineraries, deleteItinerary } from "../api/itinerary.api";
 import { TripItinerary } from "../types/itinerary";
 import { useNavigate } from "react-router-dom";
+import MyIternariesImg from "../assets/MyIternaries.jpg"; // import the local JPG
 
 const MyItineraries = () => {
   const [data, setData] = useState<TripItinerary[]>([]);
@@ -277,12 +428,11 @@ const MyItineraries = () => {
       <div
         className="min-h-screen bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage:
-            "url('https://thelocaltourist.com/wp-content/uploads/2023/05/Road-Trip-Along-the-Coast.jpg')",
+          backgroundImage: `url(${MyIternariesImg})`, // local JPG
         }}
       >
         {/* Overlay */}
-        <div className="min-h-screen backdrop-blur-sm bg-gradient-to-b from-black/20 via-black/10 to-black/30 px-6 py-12">
+        <div className="min-h-screen bg-black/60 backdrop-blur-sm px-6 py-12">
           {/* Header */}
           <div className="max-w-6xl mx-auto flex items-center justify-between mb-12 text-white">
             <div>
@@ -385,7 +535,3 @@ const MyItineraries = () => {
 };
 
 export default MyItineraries;
-
-
-
-
